@@ -91,7 +91,7 @@ export function buildWhatsAppMessage(campaign: {
     ? 'Qualquer Tipo (Aceita todos os doadores)'
     : campaign.blood_type;
 
-  return encodeURIComponent(
+  return (
     `🩸 *PEDIDO DE DOAÇÃO DE SANGUE URGENTE!*\n\n` +
     `👤 Paciente: *${campaign.patient_name}*\n` +
     `🩸 Tipo: *${bloodText}*\n` +
