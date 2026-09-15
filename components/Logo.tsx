@@ -1,0 +1,60 @@
+import React from 'react';
+
+interface LogoProps {
+  size?: 'sm' | 'md' | 'lg';
+  variant?: 'full' | 'icon';
+  className?: string;
+}
+
+const sizes = {
+  sm: { icon: 28, text: 'text-lg', tagline: 'text-xs' },
+  md: { icon: 40, text: 'text-2xl', tagline: 'text-sm' },
+  lg: { icon: 56, text: 'text-4xl', tagline: 'text-base' },
+};
+
+export function Logo({ size = 'md', variant = 'full', className = '' }: LogoProps) {
+  const s = sizes[size];
+
+  return (
+    <div className={`flex items-center gap-3 ${className}`}>
+      {/* Ícone SVG: Gota com coração */}
+      <svg
+        width={s.icon}
+        height={s.icon}
+        viewBox="0 0 40 40"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        {/* Gota de sangue */}
+        <path
+          d="M20 4C20 4 8 16 8 24C8 30.627 13.373 36 20 36C26.627 36 32 30.627 32 24C32 16 20 4 20 4Z"
+          fill="url(#blood-gradient)"
+        />
+        {/* Coração interno */}
+        <path
+          d="M20 27.5C20 27.5 13.5 22 13.5 17.5C13.5 15.015 15.515 13 18 13C19.105 13 20 13.895 20 13.895C20 13.895 20.895 13 22 13C24.485 13 26.5 15.015 26.5 17.5C26.5 22 20 27.5 20 27.5Z"
+          fill="white"
+          opacity="0.9"
+        />
+        <defs>
+          <linearGradient id="blood-gradient" x1="20" y1="4" x2="20" y2="36" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stopColor="#EF4444" />
+            <stop offset="100%" stopColor="#991B1B" />
+          </linearGradient>
+        </defs>
+      </svg>
+
+      {variant === 'full' && (
+        <div className="flex flex-col leading-none">
+          <span className={`font-bold tracking-tight ${s.text}`}>
+            <span className="text-slate-800">Doe </span>
+            <span className="text-red-600">Vida</span>
+          </span>
+          <span className={`text-slate-500 font-medium ${s.tagline}`}>
+            Conectando corações para salvar vidas
+          </span>
+        </div>
+      )}
+    </div>
+  );
+}
