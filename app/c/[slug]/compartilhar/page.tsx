@@ -23,7 +23,7 @@ export default async function CompartilharPage({ params }: PageProps) {
   const campaign = await getCampaignBySlug(slug);
   if (!campaign) notFound();
 
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://doe-vida.com.br';
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://doevida.com.br';
 
   return <CardGenerator campaign={campaign} siteUrl={siteUrl} />;
 }

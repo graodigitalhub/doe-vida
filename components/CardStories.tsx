@@ -80,24 +80,24 @@ export const CardStories = forwardRef<HTMLDivElement, CardStoriesProps>(
           </div>
 
           {/* Dados em Cards de vidro (Light theme) */}
-          <div className="bg-white/80 backdrop-blur-lg rounded-3xl p-6 mb-8 border border-slate-200 shadow-xl shadow-slate-100/50">
+          <div className="bg-white/80 backdrop-blur-lg rounded-3xl p-6 mb-8 border border-slate-200 shadow-xl shadow-slate-100/50 text-left">
             <div className="space-y-4">
               <div>
-                <div className="text-slate-500 text-xs font-semibold mb-1 uppercase">Paciente</div>
-                <div className="text-slate-900 font-bold text-lg">{campaign.patient_name}</div>
+                <div className="text-slate-400 text-xs font-bold uppercase tracking-wider mb-0.5">Paciente</div>
+                <div className="text-slate-900 font-black text-xl leading-tight">{campaign.patient_name}</div>
               </div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 gap-4 pt-3 border-t border-slate-100">
                 <div>
-                  <div className="text-slate-500 text-xs font-semibold mb-1 uppercase">Onde doar</div>
-                  <div className="text-slate-900 font-bold">{campaign.hemocenter_name}</div>
-                  <div className="text-slate-600 text-sm">{campaign.city} - {campaign.state}</div>
+                  <div className="text-slate-400 text-xs font-bold uppercase tracking-wider mb-0.5">Internado em</div>
+                  <div className="text-slate-900 font-bold text-base leading-snug">{campaign.hospital_name}</div>
+                  {campaign.patient_code && (
+                    <div className="text-red-600 font-semibold text-xs mt-0.5">Leito: {campaign.patient_code}</div>
+                  )}
                 </div>
                 <div>
-                  <div className="text-slate-500 text-xs font-semibold mb-1 uppercase">Para quem</div>
-                  <div className="text-slate-900 font-bold">{campaign.hospital_name}</div>
-                  {campaign.patient_code && (
-                    <div className="text-slate-600 text-sm">Leito: {campaign.patient_code}</div>
-                  )}
+                  <div className="text-slate-400 text-xs font-bold uppercase tracking-wider mb-0.5">Onde doar</div>
+                  <div className="text-slate-900 font-bold text-base leading-snug">{campaign.hemocenter_name}</div>
+                  <div className="text-slate-500 text-xs mt-0.5">{campaign.city} - {campaign.state}</div>
                 </div>
               </div>
             </div>

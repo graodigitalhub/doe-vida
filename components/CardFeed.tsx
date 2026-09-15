@@ -81,15 +81,22 @@ export const CardFeed = forwardRef<HTMLDivElement, CardFeedProps>(
               </div>
 
               {/* Dados */}
-              <div className="space-y-4">
+              <div className="space-y-3">
                 <div>
                   <div className="text-slate-400 text-[10px] font-bold uppercase tracking-wider mb-0.5">Paciente</div>
-                  <div className="text-slate-900 font-bold text-lg leading-tight line-clamp-2">{campaign.patient_name}</div>
+                  <div className="text-slate-900 font-bold text-base leading-tight line-clamp-2">{campaign.patient_name}</div>
+                </div>
+                <div>
+                  <div className="text-slate-400 text-[10px] font-bold uppercase tracking-wider mb-0.5">Internado em</div>
+                  <div className="text-slate-900 font-bold text-xs leading-tight line-clamp-1">{campaign.hospital_name}</div>
+                  {campaign.patient_code && (
+                    <div className="text-red-600 font-semibold text-[10px] mt-0.5">Leito: {campaign.patient_code}</div>
+                  )}
                 </div>
                 <div>
                   <div className="text-slate-400 text-[10px] font-bold uppercase tracking-wider mb-0.5">Onde doar</div>
-                  <div className="text-slate-900 font-bold text-sm leading-tight line-clamp-2">{campaign.hemocenter_name}</div>
-                  <div className="text-slate-500 text-xs mt-0.5">{campaign.city} - {campaign.state}</div>
+                  <div className="text-slate-900 font-bold text-xs leading-tight line-clamp-1">{campaign.hemocenter_name}</div>
+                  <div className="text-slate-500 text-[11px] mt-0.5">{campaign.city} - {campaign.state}</div>
                 </div>
               </div>
             </div>

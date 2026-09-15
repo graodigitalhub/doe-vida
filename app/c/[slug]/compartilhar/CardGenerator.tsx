@@ -14,10 +14,14 @@ interface CardGeneratorProps {
   siteUrl: string;
 }
 
-export function CardGenerator({ campaign, siteUrl }: CardGeneratorProps) {
+export function CardGenerator({ campaign, siteUrl: initialSiteUrl }: CardGeneratorProps) {
   const [activeTab, setActiveTab] = useState<'stories' | 'feed'>('stories');
   const storiesRef = useRef<HTMLDivElement>(null);
   const feedRef = useRef<HTMLDivElement>(null);
+
+  // Usa o origin do navegador se disponível, ou o initialSiteUrl, ou fallback final
+  const currentOrigin = typeof window !== 'undefined' ? window.location.origin : '';
+  const siteUrl = initialSiteUrl || currentOrigin || 'https://doevida.com.br';
 
   const activeRef = activeTab === 'stories' ? storiesRef : feedRef;
 

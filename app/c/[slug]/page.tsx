@@ -47,7 +47,8 @@ export default async function CampaignPage({ params, searchParams }: PageProps) 
   const mapsUrl = `https://www.google.com/maps/search/${encodeURIComponent(campaign.hemocenter_name + ' ' + campaign.city + ' ' + campaign.state)}`;
   const wazeUrl = `https://waze.com/ul?q=${encodeURIComponent(campaign.hemocenter_name + ' ' + campaign.city)}`;
 
-  const copyText = `🩸 Pedido de Doação de Sangue\n\nPaciente: ${campaign.patient_name}\nTipo: ${campaign.blood_type}\nHemocentro: ${campaign.hemocenter_name}\nHospital: ${campaign.hospital_name}\nLocal: ${campaign.city} - ${campaign.state}${campaign.patient_code ? `\nCódigo: ${campaign.patient_code}` : ''}\n\nAcesse: ${process.env.NEXT_PUBLIC_SITE_URL}/c/${campaign.slug}`;
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://doevida.com.br';
+  const copyText = `🩸 Pedido de Doação de Sangue\n\nPaciente: ${campaign.patient_name}\nTipo Sanguíneo: ${campaign.blood_type}\nInternado em: ${campaign.hospital_name}${campaign.patient_code ? ` (Leito: ${campaign.patient_code})` : ''}\nOnde Doar: ${campaign.hemocenter_name} (${campaign.city} - ${campaign.state})\n\nAcesse o pedido e saiba como doar:\n${siteUrl}/c/${campaign.slug}`;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-red-50/30 py-12 px-4">
