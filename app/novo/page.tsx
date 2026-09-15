@@ -3,11 +3,12 @@
 import { useState, useTransition, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { ArrowRight, Loader2, Heart, ShieldCheck, Calendar, Info } from 'lucide-react';
+import { ArrowRight, Loader2, Heart, ShieldCheck, Calendar, Info, Crop, Sparkles } from 'lucide-react';
 import { createCampaign } from '@/lib/actions/campaigns';
 import { createCampaignSchema, CreateCampaignInput } from '@/lib/validations/campaign';
 import { BLOOD_TYPE_CONFIG, BRAZIL_STATES } from '@/lib/utils';
 import { TermsDialog } from '@/components/TermsDialog';
+import { ImageCropModal } from '@/components/ImageCropModal';
 
 const DONATION_TYPES = ['Sangue Total', 'Plaquetas', 'Plasma', 'Eritrócitos'] as const;
 
@@ -56,6 +57,9 @@ export default function NovoCampaignPage() {
   const [serverError, setServerError] = useState<string | null>(null);
   const [isTermsOpen, setIsTermsOpen] = useState(false);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
+  const [rawImageSrc, setRawImageSrc] = useState<string | null>(null);
+  const [isCropModalOpen, setIsCropModalOpen] = useState(false);
+  const croppedBlobRef = useRef<Blob | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const {
@@ -77,15 +81,23 @@ export default function NovoCampaignPage() {
   const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      if (file.size > 10 * 1024 * 1024) {
-        alert('A foto selecionada é muito grande. Escolha uma imagem com até 10MB.');
+      if (file.size > 15 * 1024 * 1024) {
+        alert('A foto selecionada é muito grande. Escolha uma imagem com até 15MB.');
         e.target.value = '';
         return;
       }
-      setPhotoPreview(URL.createObjectURL(file));
-    } else {
-      setPhotoPreview(null);
+      const reader = new FileReader();
+      reader.onload = () => {
+        setRawImageSrc(reader.result as string);
+        setIsCropModalOpen(true);
+      };
+      reader.readAsDataURL(file);
     }
+  };
+
+  const handleCropComplete = (croppedBlob: Blob, croppedUrl: string) => {
+    croppedBlobRef.current = croppedBlob;
+    setPhotoPreview(croppedUrl);
   };
 
   const onSubmit = (data: CreateCampaignInput, event?: React.BaseSyntheticEvent) => {
@@ -94,14 +106,19 @@ export default function NovoCampaignPage() {
       const formElement = event?.target as HTMLFormElement;
       const formData = new FormData(formElement);
 
-      // Se houver arquivo selecionado, comprime no cliente
-      const file = fileInputRef.current?.files?.[0];
-      if (file && file.size > 0) {
-        try {
-          const compressedBlob = await compressImage(file);
-          formData.set('photo', compressedBlob, 'patient_photo.jpg');
-        } catch (e) {
-          console.warn('Compressão falhou, enviando arquivo original', e);
+      // Se houver blob recortado, envia ele diretamente otimizado
+      if (croppedBlobRef.current) {
+        formData.set('photo', croppedBlobRef.current, 'patient_photo.jpg');
+      } else {
+        // Fallback caso não tenha passado pelo corte
+        const file = fileInputRef.current?.files?.[0];
+        if (file && file.size > 0) {
+          try {
+            const compressedBlob = await compressImage(file);
+            formData.set('photo', compressedBlob, 'patient_photo.jpg');
+          } catch (e) {
+            console.warn('Compressão falhou, enviando arquivo original', e);
+          }
         }
       }
 
@@ -282,16 +299,29 @@ export default function NovoCampaignPage() {
                   type="file"
                   accept="image/jpeg,image/png,image/webp"
                   onChange={handlePhotoChange}
-                  className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 focus:outline-none focus:ring-2 focus:ring-red-400 focus:border-transparent transition-all file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-red-50 file:text-red-700 hover:file:bg-red-100"
+                  className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 focus:outline-none focus:ring-2 focus:ring-red-400 focus:border-transparent transition-all file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-red-50 file:text-red-700 hover:file:bg-red-100 cursor-pointer"
                 />
                 {photoPreview && (
-                  <div className="shrink-0 flex items-center gap-2">
+                  <div className="shrink-0 flex items-center gap-3 bg-red-50/60 border border-red-100 p-2.5 rounded-2xl">
                     <img 
                       src={photoPreview} 
                       alt="Prévia" 
-                      className="w-12 h-12 rounded-full object-cover border-2 border-red-200 shadow-sm"
+                      className="w-14 h-14 rounded-full object-cover border-2 border-white shadow-md shadow-red-200/50"
                     />
-                    <span className="text-xs text-teal-600 font-semibold">Foto carregada</span>
+                    <div>
+                      <div className="flex items-center gap-1 text-xs text-emerald-700 font-bold">
+                        <Sparkles className="w-3.5 h-3.5 text-emerald-600" />
+                        Foto enquadrada
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setIsCropModalOpen(true)}
+                        className="mt-1 inline-flex items-center gap-1 text-xs text-red-600 hover:text-red-800 font-semibold underline underline-offset-2 transition-colors"
+                      >
+                        <Crop className="w-3 h-3" />
+                        Reajustar corte
+                      </button>
+                    </div>
                   </div>
                 )}
               </div>
@@ -393,6 +423,16 @@ export default function NovoCampaignPage() {
 
       {/* Modal de Termos de Uso e LGPD */}
       <TermsDialog isOpen={isTermsOpen} onClose={() => setIsTermsOpen(false)} />
+
+      {/* Modal de Corte e Enquadramento da Foto */}
+      {rawImageSrc && (
+        <ImageCropModal
+          isOpen={isCropModalOpen}
+          imageSrc={rawImageSrc}
+          onClose={() => setIsCropModalOpen(false)}
+          onCropComplete={handleCropComplete}
+        />
+      )}
     </div>
   );
 }
