@@ -25,7 +25,7 @@ export function TermsDialog({ isOpen, onClose }: TermsDialogProps) {
             </div>
             <div>
               <h2 className="text-xl font-black text-slate-900 leading-tight">Termos de Uso e LGPD</h2>
-              <p className="text-xs text-red-600 font-semibold">Doe Vida • doe-vida.com.br</p>
+              <p className="text-xs text-red-600 font-semibold">Doe Vida • doevida.com.br</p>
             </div>
           </div>
           <button 

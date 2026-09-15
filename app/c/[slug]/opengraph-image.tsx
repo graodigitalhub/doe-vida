@@ -1,6 +1,6 @@
 import { ImageResponse } from 'next/og';
 import { getCampaignBySlug } from '@/lib/actions/campaigns';
-import { BLOOD_TYPE_CONFIG } from '@/lib/utils';
+import { BLOOD_TYPE_CONFIG, isAnyBloodType, formatBloodType } from '@/lib/utils';
 
 export const runtime = 'edge';
 
@@ -31,7 +31,7 @@ export default async function Image({ params }: { params: Promise<{ slug: string
             fontWeight: 'bold',
           }}
         >
-          Doe Vida — doe-vida.com.br
+          Doe Vida — doevida.com.br
         </div>
       ),
       { ...size }
@@ -79,7 +79,7 @@ export default async function Image({ params }: { params: Promise<{ slug: string
                 Doe <span style={{ color: '#DC2626' }}>Vida</span>
               </div>
               <div style={{ fontSize: '15px', color: '#64748B', fontWeight: 'bold' }}>
-                doe-vida.com.br
+                doevida.com.br
               </div>
             </div>
           </div>
@@ -94,10 +94,10 @@ export default async function Image({ params }: { params: Promise<{ slug: string
               borderRadius: '999px',
               display: 'flex',
               alignItems: 'center',
-              gap: '8px',
+              boxShadow: '0 4px 12px rgba(220, 38, 38, 0.2)',
             }}
           >
-            🚨 PEDIDO URGENTE DE DOAÇÃO
+            🚨 PEDIDO DE DOAÇÃO
           </div>
         </div>
 
@@ -113,7 +113,8 @@ export default async function Image({ params }: { params: Promise<{ slug: string
                 height: '210px',
                 borderRadius: '999px',
                 objectFit: 'cover',
-                border: '6px solid #FEE2E2',
+                border: '6px solid #DC2626',
+                boxShadow: '0 12px 24px rgba(220, 38, 38, 0.15)',
               }}
             />
           ) : (
@@ -129,8 +130,8 @@ export default async function Image({ params }: { params: Promise<{ slug: string
                 border: '6px solid #FEE2E2',
               }}
             >
-              <span style={{ fontSize: '72px', fontWeight: '900', color: bloodConfig.color }}>
-                {campaign.blood_type}
+              <span style={{ fontSize: isAnyBloodType(campaign.blood_type) ? '26px' : '68px', fontWeight: '900', color: '#DC2626', textAlign: 'center' }}>
+                {formatBloodType(campaign.blood_type)}
               </span>
             </div>
           )}
@@ -143,7 +144,7 @@ export default async function Image({ params }: { params: Promise<{ slug: string
               {campaign.patient_name}
             </div>
             <div style={{ fontSize: '24px', color: '#475569', display: 'flex', alignItems: 'center', gap: '8px' }}>
-              Precisa de sangue <strong style={{ color: bloodConfig.color, marginLeft: '6px', fontSize: '32px' }}>{campaign.blood_type}</strong>
+              Precisa de sangue <strong style={{ color: '#DC2626', marginLeft: '6px', fontSize: isAnyBloodType(campaign.blood_type) ? '24px' : '30px' }}>{isAnyBloodType(campaign.blood_type) ? 'de Qualquer Tipo' : campaign.blood_type}</strong>
             </div>
           </div>
         </div>
@@ -158,7 +159,7 @@ export default async function Image({ params }: { params: Promise<{ slug: string
             paddingTop: '24px',
           }}
         >
-          <div style={{ display: 'flex', gap: '32px' }}>
+          <div style={{ display: 'flex', gap: '48px' }}>
             <div style={{ display: 'flex', flexDirection: 'column' }}>
               <span style={{ fontSize: '13px', color: '#94A3B8', fontWeight: 'bold', textTransform: 'uppercase' }}>Hospital</span>
               <span style={{ fontSize: '18px', color: '#1E293B', fontWeight: 'bold' }}>{campaign.hospital_name}</span>
@@ -184,7 +185,7 @@ export default async function Image({ params }: { params: Promise<{ slug: string
               borderRadius: '14px',
             }}
           >
-            doe-vida.com.br
+            doevida.com.br
           </div>
         </div>
       </div>

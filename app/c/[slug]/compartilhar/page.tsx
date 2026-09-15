@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import { getCampaignBySlug } from '@/lib/actions/campaigns';
+import { formatBloodType } from '@/lib/utils';
 import { CardGenerator } from './CardGenerator';
 
 interface PageProps {
@@ -12,8 +13,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const campaign = await getCampaignBySlug(slug);
   if (!campaign) return { title: 'Campanha não encontrada' };
 
+  const bloodLabel = formatBloodType(campaign.blood_type);
+
   return {
-    title: `Compartilhar: ${campaign.patient_name} precisa de ${campaign.blood_type} — Doe Vida`,
+    title: `Compartilhar: ${campaign.patient_name} precisa de sangue (${bloodLabel}) — Doe Vida`,
     description: 'Gere cards profissionais para Instagram e WhatsApp e ajude a divulgar este pedido de doação de sangue.',
   };
 }

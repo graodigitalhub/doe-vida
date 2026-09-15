@@ -190,7 +190,9 @@ export default function NovoCampaignPage() {
                 >
                   <option value="">Selecione...</option>
                   {Object.entries(BLOOD_TYPE_CONFIG).map(([type, config]) => (
-                    <option key={type} value={type}>{type} — {config.label}</option>
+                    <option key={type} value={type}>
+                      {type === 'QUALQUER' ? 'Qualquer Tipo (Aceita qualquer doação)' : `${type} — ${config.label}`}
+                    </option>
                   ))}
                 </select>
                 {errors.blood_type && (

@@ -2,7 +2,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { MapPin, Heart, Clock, Users } from 'lucide-react';
 import { Campaign } from '@/types/campaign';
-import { BLOOD_TYPE_CONFIG, formatDate, isUrgent } from '@/lib/utils';
+import { BLOOD_TYPE_CONFIG, formatDate, isUrgent, isAnyBloodType } from '@/lib/utils';
 
 interface CampaignCardProps {
   campaign: Campaign;
@@ -20,11 +20,23 @@ export function CampaignCard({ campaign }: CampaignCardProps) {
 
         <div className="p-6">
           <div className="flex items-start gap-4 mb-4">
-            <div className={`w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 ${bloodConfig.bg} border-2 border-red-100 shadow-sm`}>
-              <span className={`font-black text-2xl ${bloodConfig.color}`}>
-                {campaign.blood_type}
-              </span>
-            </div>
+            {isAnyBloodType(campaign.blood_type) ? (
+              <div className="w-14 h-14 rounded-2xl flex flex-col items-center justify-center shrink-0 bg-red-50 border-2 border-red-100 shadow-sm text-center p-1">
+                <span className="text-xs">🩸</span>
+                <span className="text-[10px] font-black uppercase tracking-tight text-red-600 leading-tight mt-0.5">
+                  Qualquer
+                </span>
+                <span className="text-[9px] font-bold uppercase text-slate-500 leading-tight">
+                  Tipo
+                </span>
+              </div>
+            ) : (
+              <div className={`w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 ${bloodConfig.bg} border-2 border-red-100 shadow-sm`}>
+                <span className={`font-black text-2xl ${bloodConfig.color}`}>
+                  {campaign.blood_type}
+                </span>
+              </div>
+            )}
 
             <div className="flex-1 min-w-0">
               <h3 className="font-bold text-slate-900 text-lg leading-tight truncate group-hover:text-red-600 transition-colors">

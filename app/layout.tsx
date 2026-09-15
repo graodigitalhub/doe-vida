@@ -4,6 +4,7 @@ import { Logo } from '@/components/Logo';
 import Link from 'next/link';
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://doevida.com.br'),
   title: 'Doe Vida — Conectando corações para salvar vidas',
   description: 'Plataforma de campanhas de doação de sangue. Cadastre pedidos urgentes, gere cards profissionais para Instagram e WhatsApp e ajude a salvar vidas.',
   keywords: ['doação de sangue', 'hemocentro', 'tipo sanguíneo', 'campanha', 'doe vida'],
@@ -11,6 +12,8 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Doe Vida — Conectando corações para salvar vidas',
     description: 'Cadastre pedidos de doação de sangue e gere cards virais para Instagram e WhatsApp.',
+    url: 'https://doevida.com.br',
+    siteName: 'Doe Vida',
     type: 'website',
     locale: 'pt_BR',
   },

@@ -4,7 +4,7 @@ import Image from 'next/image';
 import type { Metadata } from 'next';
 import { MapPin, CheckCircle, Share2, Navigation, ShieldCheck } from 'lucide-react';
 import { getCampaignBySlug, verifyCampaignToken } from '@/lib/actions/campaigns';
-import { BLOOD_TYPE_CONFIG, formatDate, isUrgent } from '@/lib/utils';
+import { BLOOD_TYPE_CONFIG, formatDate, isUrgent, isAnyBloodType, formatBloodType } from '@/lib/utils';
 import { CopyDataButton } from './CopyDataButton';
 import { CompleteCampaignButton } from './CompleteCampaignButton';
 import { PledgeButton } from '@/components/PledgeButton';
@@ -20,11 +20,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const campaign = await getCampaignBySlug(slug);
   if (!campaign) return { title: 'Campanha não encontrada — Doe Vida' };
 
+  const bloodLabel = formatBloodType(campaign.blood_type);
+
   return {
-    title: `${campaign.patient_name} precisa de ${campaign.blood_type} — Doe Vida`,
-    description: `Pedido de doação de ${campaign.donation_type} tipo ${campaign.blood_type} para ${campaign.patient_name} em ${campaign.hemocenter_name}, ${campaign.city} - ${campaign.state}.`,
+    title: `${campaign.patient_name} precisa de sangue (${bloodLabel}) — Doe Vida`,
+    description: `Pedido de doação de ${campaign.donation_type} (${bloodLabel}) para ${campaign.patient_name} em ${campaign.hemocenter_name}, ${campaign.city} - ${campaign.state}.`,
     openGraph: {
-      title: `🚨 URGENTE: ${campaign.patient_name} precisa de ${campaign.blood_type}`,
+      title: `🚨 URGENTE: ${campaign.patient_name} precisa de sangue (${bloodLabel})`,
       description: `Doe sangue e salve a vida de ${campaign.patient_name}. Hemocentro: ${campaign.hemocenter_name} (${campaign.city} - ${campaign.state}).`,
     },
   };
@@ -48,7 +50,8 @@ export default async function CampaignPage({ params, searchParams }: PageProps) 
   const wazeUrl = `https://waze.com/ul?q=${encodeURIComponent(campaign.hemocenter_name + ' ' + campaign.city)}`;
 
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://doevida.com.br';
-  const copyText = `🩸 Pedido de Doação de Sangue\n\nPaciente: ${campaign.patient_name}\nTipo Sanguíneo: ${campaign.blood_type}\nInternado em: ${campaign.hospital_name}${campaign.patient_code ? ` (Leito: ${campaign.patient_code})` : ''}\nOnde Doar: ${campaign.hemocenter_name} (${campaign.city} - ${campaign.state})\n\nAcesse o pedido e saiba como doar:\n${siteUrl}/c/${campaign.slug}`;
+  const displayBloodType = isAnyBloodType(campaign.blood_type) ? 'Qualquer Tipo (Aceita todos os doadores)' : campaign.blood_type;
+  const copyText = `🩸 Pedido de Doação de Sangue\n\nPaciente: ${campaign.patient_name}\nTipo Sanguíneo: ${displayBloodType}\nInternado em: ${campaign.hospital_name}${campaign.patient_code ? ` (Leito: ${campaign.patient_code})` : ''}\nOnde Doar: ${campaign.hemocenter_name} (${campaign.city} - ${campaign.state})\n\nAcesse o pedido e saiba como doar:\n${siteUrl}/c/${campaign.slug}`;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-red-50/30 py-12 px-4">
@@ -94,17 +97,42 @@ export default async function CampaignPage({ params, searchParams }: PageProps) 
               </div>
             ) : (
               <div className="w-40 h-40 md:w-52 md:h-52 bg-white rounded-full flex items-center justify-center shadow-lg shadow-red-100 border-4 border-white flex-shrink-0">
-                <div className="text-center">
-                  <div className="text-5xl font-black mb-1" style={{ color: bloodConfig.color }}>
-                    {campaign.blood_type}
+                {isAnyBloodType(campaign.blood_type) ? (
+                  <div className="text-center p-3">
+                    <span className="text-3xl md:text-4xl mb-1 block">🩸</span>
+                    <span className="text-lg md:text-xl font-black text-red-600 uppercase leading-tight block">
+                      Qualquer<br />Tipo
+                    </span>
+                    <span className="text-[10px] md:text-xs font-bold text-slate-400 mt-1 uppercase tracking-wider block">
+                      Aceita todos os doadores
+                    </span>
                   </div>
-                </div>
+                ) : (
+                  <div className="text-center">
+                    <div className={`text-5xl font-black mb-1 ${bloodConfig.color}`}>
+                      {campaign.blood_type}
+                    </div>
+                  </div>
+                )}
               </div>
             )}
 
             <div className="text-center md:text-left flex-1">
-              <div className="inline-flex items-center gap-2 bg-red-600 text-white font-bold text-xs px-3 py-1 rounded-full mb-4 shadow-sm shadow-red-200">
-                🚨 {urgent ? 'URGENTE' : 'PRECISA-SE DE DOAÇÃO'}
+              <div className="flex flex-wrap items-center gap-2 mb-4 justify-center md:justify-start">
+                <div className="inline-flex items-center gap-2 bg-red-600 text-white font-bold text-xs px-3 py-1 rounded-full shadow-sm shadow-red-200">
+                  🚨 {urgent ? 'URGENTE' : 'PRECISA-SE DE DOAÇÃO'}
+                </div>
+                {campaign.patient_photo_url && (
+                  isAnyBloodType(campaign.blood_type) ? (
+                    <div className="inline-flex items-center gap-1.5 bg-red-100 text-red-700 font-black text-xs px-3 py-1 rounded-full border border-red-200 shadow-xs">
+                      <span>🩸</span> Qualquer Tipo
+                    </div>
+                  ) : (
+                    <div className={`inline-flex items-center gap-1.5 ${bloodConfig.bg} ${bloodConfig.color} font-black text-xs px-3 py-1 rounded-full border border-red-100 shadow-xs`}>
+                      <span>🩸</span> {campaign.blood_type}
+                    </div>
+                  )
+                )}
               </div>
               <h1 className="text-3xl md:text-4xl font-black text-slate-900 mb-2 leading-tight">
                 {campaign.patient_name}
@@ -113,7 +141,7 @@ export default async function CampaignPage({ params, searchParams }: PageProps) 
                 <p className="text-sm text-slate-500 mb-2">Código / Leito: <span className="font-semibold">{campaign.patient_code}</span></p>
               )}
               <p className="text-slate-600 text-lg">
-                Precisa de doação de sangue <strong style={{ color: bloodConfig.color }}>{campaign.blood_type}</strong>
+                Precisa de doação de sangue <strong className="text-red-600 font-black">{isAnyBloodType(campaign.blood_type) ? 'Qualquer Tipo (Aceita todos os doadores)' : campaign.blood_type}</strong>
               </p>
             </div>
           </div>

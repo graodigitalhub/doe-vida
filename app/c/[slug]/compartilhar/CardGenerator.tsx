@@ -4,6 +4,7 @@ import { useRef, useState } from 'react';
 import { Smartphone, LayoutGrid, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import { Campaign } from '@/types/campaign';
+import { formatBloodType } from '@/lib/utils';
 import { CardStories } from '@/components/CardStories';
 import { CardFeed } from '@/components/CardFeed';
 import { ShareButtons } from '@/components/ShareButtons';
@@ -128,7 +129,7 @@ export function CardGenerator({ campaign, siteUrl: initialSiteUrl }: CardGenerat
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 text-sm">
             {[
               { label: 'Paciente', value: campaign.patient_name },
-              { label: 'Tipo', value: campaign.blood_type },
+              { label: 'Tipo', value: formatBloodType(campaign.blood_type) },
               { label: 'Doação', value: campaign.donation_type },
               { label: 'Hemocentro', value: campaign.hemocenter_name },
               { label: 'Hospital', value: campaign.hospital_name },

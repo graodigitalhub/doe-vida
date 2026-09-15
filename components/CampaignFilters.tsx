@@ -80,7 +80,9 @@ export function CampaignFilters({ onFilter }: CampaignFiltersProps) {
           >
             <option value="">Todos os tipos</option>
             {Object.entries(BLOOD_TYPE_CONFIG).map(([type, config]) => (
-              <option key={type} value={type}>{type} — {config.label}</option>
+              <option key={type} value={type}>
+                {type === 'QUALQUER' ? 'Qualquer Tipo' : `${type} — ${config.label}`}
+              </option>
             ))}
           </select>
         </div>

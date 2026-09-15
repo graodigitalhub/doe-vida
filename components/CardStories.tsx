@@ -1,6 +1,6 @@
 import { forwardRef } from 'react';
 import { Campaign } from '@/types/campaign';
-import { BLOOD_TYPE_CONFIG } from '@/lib/utils';
+import { BLOOD_TYPE_CONFIG, isAnyBloodType } from '@/lib/utils';
 import { QRCodeDisplay } from './QRCodeDisplay';
 
 interface CardStoriesProps {
@@ -9,7 +9,7 @@ interface CardStoriesProps {
 }
 
 export const CardStories = forwardRef<HTMLDivElement, CardStoriesProps>(
-  ({ campaign, siteUrl = 'https://doe-vida.com.br' }, ref) => {
+  ({ campaign, siteUrl = 'https://doevida.com.br' }, ref) => {
     const bloodConfig = BLOOD_TYPE_CONFIG[campaign.blood_type] ?? BLOOD_TYPE_CONFIG['O+'];
     const baseUrl = siteUrl || 'https://doevida.com.br';
     const qrUrl = `${baseUrl}/c/${campaign.slug}`;
@@ -46,7 +46,7 @@ export const CardStories = forwardRef<HTMLDivElement, CardStoriesProps>(
                 <div className="text-slate-900 font-bold text-lg leading-none">
                   Doe <span className="text-red-600">Vida</span>
                 </div>
-                <div className="text-slate-500 text-xs mt-0.5">doe-vida.com.br</div>
+                <div className="text-slate-500 text-xs mt-0.5">doevida.com.br</div>
               </div>
             </div>
 
@@ -58,25 +58,66 @@ export const CardStories = forwardRef<HTMLDivElement, CardStoriesProps>(
 
           {/* Foto do Paciente e Tipo sanguíneo */}
           <div className="flex-1 flex flex-col justify-center items-center text-center">
-            {campaign.patient_photo_url && (
-              <div className="mb-4 rounded-full p-1.5 bg-white shadow-xl shadow-red-100">
-                <img 
-                  src={campaign.patient_photo_url} 
-                  alt={campaign.patient_name}
-                  className="w-52 h-52 object-cover rounded-full"
-                />
+            {campaign.patient_photo_url ? (
+              <>
+                <div className="mb-4 rounded-full p-1.5 bg-white shadow-xl shadow-red-100">
+                  <img 
+                    src={campaign.patient_photo_url} 
+                    alt={campaign.patient_name}
+                    className="w-48 h-48 object-cover rounded-full"
+                  />
+                </div>
+                {isAnyBloodType(campaign.blood_type) ? (
+                  <div className="flex flex-col items-center my-2">
+                    <span className="mb-1 text-slate-500 text-xs font-bold uppercase tracking-widest">
+                      Precisa-se de Sangue
+                    </span>
+                    <div className="inline-flex items-center gap-2 bg-gradient-to-r from-red-600 to-rose-600 text-white px-5 py-2 rounded-full shadow-lg shadow-red-200/60 mb-1.5">
+                      <span className="text-lg">🩸</span>
+                      <span className="font-black text-lg tracking-tight uppercase">Qualquer Tipo</span>
+                    </div>
+                    <span className="text-slate-600 font-bold text-xs bg-white/90 border border-slate-200/80 px-3.5 py-1 rounded-full shadow-xs">
+                      Aceita todos os doadores
+                    </span>
+                  </div>
+                ) : (
+                  <>
+                    <div className="mb-1 text-slate-500 text-xs font-semibold uppercase tracking-widest">
+                      Precisa-se de Sangue
+                    </div>
+                    <div className="font-black leading-none mb-1 text-[72px] text-red-600">
+                      {campaign.blood_type}
+                    </div>
+                    <div className="text-slate-600 font-bold text-sm bg-red-50 px-3.5 py-1 rounded-full border border-red-100">
+                      {bloodConfig.label}
+                    </div>
+                  </>
+                )}
+              </>
+            ) : (
+              <div className="w-48 h-48 rounded-full bg-white shadow-xl shadow-red-100 border-4 border-white flex items-center justify-center mb-2">
+                {isAnyBloodType(campaign.blood_type) ? (
+                  <div className="flex flex-col items-center justify-center text-center p-3">
+                    <span className="text-3xl mb-1">🩸</span>
+                    <span className="font-black text-lg text-red-600 uppercase leading-tight">
+                      Qualquer<br />Tipo
+                    </span>
+                    <span className="text-[10px] font-bold text-slate-400 mt-1 uppercase tracking-wider">
+                      Todos os doadores
+                    </span>
+                  </div>
+                ) : (
+                  <div className="text-center">
+                    <div className="font-black leading-none tracking-tighter text-[60px] text-red-600">
+                      {campaign.blood_type}
+                    </div>
+                    <div className="text-slate-500 text-xs font-bold mt-1">
+                      {bloodConfig.label}
+                    </div>
+                  </div>
+                )}
               </div>
             )}
-            
-            <div className="mb-2 text-slate-500 text-sm font-semibold uppercase tracking-widest">
-              Precisa-se de Sangue
-            </div>
-            <div className="text-[90px] font-black leading-none mb-2" style={{ color: bloodConfig.color }}>
-              {campaign.blood_type}
-            </div>
-            <div className="text-slate-600 font-bold text-lg mb-6 bg-red-50 px-4 py-2 rounded-full border border-red-100">
-              {bloodConfig.label}
-            </div>
           </div>
 
           {/* Dados em Cards de vidro (Light theme) */}

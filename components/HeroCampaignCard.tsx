@@ -4,33 +4,10 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Heart, ChevronLeft, ChevronRight, ExternalLink, Sparkles, MapPin, Building2, User } from 'lucide-react';
 import { Campaign } from '@/types/campaign';
-import { isUrgent } from '@/lib/utils';
+import { isUrgent, isAnyBloodType, getBloodSubtitle } from '@/lib/utils';
 
 interface HeroCampaignCardProps {
   campaigns: Campaign[];
-}
-
-function getBloodSubtitle(type: string): string {
-  switch (type) {
-    case 'O-':
-      return 'Doador Universal';
-    case 'AB+':
-      return 'Receptor Universal';
-    case 'O+':
-      return 'Compatível com RH+';
-    case 'A+':
-    case 'A-':
-      return 'Tipo A Necessário';
-    case 'B+':
-    case 'B-':
-      return 'Tipo B Necessário';
-    case 'AB-':
-      return 'Tipo Raro';
-    case 'QUALQUER':
-      return 'Todos os Tipos';
-    default:
-      return 'Doação Necessária';
-  }
 }
 
 export function HeroCampaignCard({ campaigns }: HeroCampaignCardProps) {
@@ -219,16 +196,29 @@ export function HeroCampaignCard({ campaigns }: HeroCampaignCardProps) {
               </div>
 
               {/* Tipo Sanguíneo */}
-              <div className="flex-1 text-right">
-                <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest block mb-0.5">
+              <div className="flex-1 flex flex-col items-end justify-center min-h-[72px] text-right">
+                <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest block mb-1">
                   Tipo Sanguíneo
                 </span>
-                <span className="text-5xl font-black text-red-600 tracking-tight leading-none block">
-                  {current.blood_type}
-                </span>
-                <span className="inline-block mt-1 text-[11px] font-bold text-slate-600 bg-white/90 px-2.5 py-0.5 rounded-full border border-slate-200/60 shadow-xs">
-                  {getBloodSubtitle(current.blood_type)}
-                </span>
+                {isAnyBloodType(current.blood_type) ? (
+                  <div className="flex flex-col items-end">
+                    <span className="inline-flex items-center gap-1.5 bg-red-50 border border-red-200 text-red-600 font-black text-xs px-3 py-1.5 rounded-xl shadow-xs leading-none uppercase tracking-tight">
+                      <span className="text-xs">🩸</span> Qualquer Tipo
+                    </span>
+                    <span className="text-[10px] font-bold text-slate-500 mt-1.5">
+                      Aceita todos os doadores
+                    </span>
+                  </div>
+                ) : (
+                  <>
+                    <span className="text-4xl sm:text-5xl tracking-tight font-black text-red-600 leading-none block">
+                      {current.blood_type}
+                    </span>
+                    <span className="inline-block mt-1 text-[11px] font-bold text-slate-600 bg-white/90 px-2.5 py-0.5 rounded-full border border-slate-200/60 shadow-xs">
+                      {getBloodSubtitle(current.blood_type)}
+                    </span>
+                  </>
+                )}
               </div>
             </div>
 

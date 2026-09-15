@@ -36,8 +36,41 @@ export const BLOOD_TYPE_CONFIG: Record<string, { color: string; bg: string; labe
   'AB-':     { color: 'text-purple-700',bg: 'bg-purple-100',label: 'AB Negativo' },
   'O+':      { color: 'text-rose-600',  bg: 'bg-rose-50',  label: 'O Positivo' },
   'O-':      { color: 'text-rose-800',  bg: 'bg-rose-100', label: 'O Negativo' },
-  'QUALQUER':{ color: 'text-teal-600',  bg: 'bg-teal-50',  label: 'Qualquer Tipo' },
+  'QUALQUER':{ color: 'text-red-600',   bg: 'bg-red-50',   label: 'Qualquer Tipo' },
 };
+
+export function isAnyBloodType(type?: string | null): boolean {
+  if (!type) return false;
+  const normalized = type.trim().toUpperCase();
+  return normalized === 'QUALQUER' || normalized === 'QUALQUER TIPO' || normalized === 'TODOS' || normalized === 'TODOS OS TIPOS';
+}
+
+export function formatBloodType(type?: string | null): string {
+  if (isAnyBloodType(type)) return 'Qualquer Tipo';
+  return type?.trim() || '';
+}
+
+export function getBloodSubtitle(type?: string | null): string {
+  if (isAnyBloodType(type)) return 'Aceita todos os doadores';
+  switch (type) {
+    case 'O-':
+      return 'Doador Universal';
+    case 'AB+':
+      return 'Receptor Universal';
+    case 'O+':
+      return 'Compatível com RH+';
+    case 'A+':
+    case 'A-':
+      return 'Tipo A Necessário';
+    case 'B+':
+    case 'B-':
+      return 'Tipo B Necessário';
+    case 'AB-':
+      return 'Tipo Raro';
+    default:
+      return 'Doação Necessária';
+  }
+}
 
 export const BRAZIL_STATES = [
   'AC','AL','AP','AM','BA','CE','DF','ES','GO','MA',
@@ -53,11 +86,15 @@ export function buildWhatsAppMessage(campaign: {
   state: string;
   slug: string;
 }): string {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://doe-vida.com.br';
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://doevida.com.br';
+  const bloodText = isAnyBloodType(campaign.blood_type)
+    ? 'Qualquer Tipo (Aceita todos os doadores)'
+    : campaign.blood_type;
+
   return encodeURIComponent(
     `🩸 *PEDIDO DE DOAÇÃO DE SANGUE URGENTE!*\n\n` +
     `👤 Paciente: *${campaign.patient_name}*\n` +
-    `🩸 Tipo: *${campaign.blood_type}*\n` +
+    `🩸 Tipo: *${bloodText}*\n` +
     `🏥 Hemocentro: *${campaign.hemocenter_name}*\n` +
     `📍 Local: *${campaign.city} - ${campaign.state}*\n\n` +
     `Por favor, compartilhe! Cada doação pode salvar até 4 vidas! ❤️\n` +
