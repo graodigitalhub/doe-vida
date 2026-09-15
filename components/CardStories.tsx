@@ -11,7 +11,8 @@ interface CardStoriesProps {
 export const CardStories = forwardRef<HTMLDivElement, CardStoriesProps>(
   ({ campaign, siteUrl = 'https://doe-vida.com.br' }, ref) => {
     const bloodConfig = BLOOD_TYPE_CONFIG[campaign.blood_type] ?? BLOOD_TYPE_CONFIG['O+'];
-    const qrUrl = `${siteUrl}/c/${campaign.slug}`;
+    const baseUrl = siteUrl || 'https://doevida.com.br';
+    const qrUrl = `${baseUrl}/c/${campaign.slug}`;
 
     return (
       <div
@@ -58,11 +59,11 @@ export const CardStories = forwardRef<HTMLDivElement, CardStoriesProps>(
           {/* Foto do Paciente e Tipo sanguíneo */}
           <div className="flex-1 flex flex-col justify-center items-center text-center">
             {campaign.patient_photo_url && (
-              <div className="mb-4 rounded-full p-2 bg-white shadow-xl shadow-red-100">
+              <div className="mb-4 rounded-full p-1.5 bg-white shadow-xl shadow-red-100">
                 <img 
                   src={campaign.patient_photo_url} 
                   alt={campaign.patient_name}
-                  className="w-72 h-72 object-cover rounded-full"
+                  className="w-52 h-52 object-cover rounded-full"
                 />
               </div>
             )}
@@ -70,10 +71,10 @@ export const CardStories = forwardRef<HTMLDivElement, CardStoriesProps>(
             <div className="mb-2 text-slate-500 text-sm font-semibold uppercase tracking-widest">
               Precisa-se de Sangue
             </div>
-            <div className="text-[100px] font-black leading-none mb-2" style={{ color: bloodConfig.color }}>
+            <div className="text-[90px] font-black leading-none mb-2" style={{ color: bloodConfig.color }}>
               {campaign.blood_type}
             </div>
-            <div className="text-slate-600 font-bold text-xl mb-8 bg-red-50 px-4 py-2 rounded-full border border-red-100">
+            <div className="text-slate-600 font-bold text-lg mb-6 bg-red-50 px-4 py-2 rounded-full border border-red-100">
               {bloodConfig.label}
             </div>
           </div>

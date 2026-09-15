@@ -11,7 +11,8 @@ interface CardFeedProps {
 export const CardFeed = forwardRef<HTMLDivElement, CardFeedProps>(
   ({ campaign, siteUrl = 'https://doe-vida.com.br' }, ref) => {
     const bloodConfig = BLOOD_TYPE_CONFIG[campaign.blood_type] ?? BLOOD_TYPE_CONFIG['O+'];
-    const qrUrl = `${siteUrl}/c/${campaign.slug}`;
+    const baseUrl = siteUrl || 'https://doevida.com.br';
+    const qrUrl = `${baseUrl}/c/${campaign.slug}`;
 
     return (
       <div
@@ -33,7 +34,7 @@ export const CardFeed = forwardRef<HTMLDivElement, CardFeedProps>(
         <div className="relative z-10 flex w-full p-8 gap-8">
           
           {/* Lado Esquerdo (Tipo e Foto) */}
-          <div className="flex-1 flex flex-col items-center justify-start border-r border-slate-200 pr-8 pt-2">
+          <div className="flex-1 flex flex-col items-center justify-center border-r border-slate-200 pr-8">
             <div className="bg-red-600 text-white text-[11px] font-bold px-4 py-1.5 rounded-full mb-6 shadow-md shadow-red-200">
               🚨 PEDIDO DE DOAÇÃO
             </div>
@@ -54,7 +55,7 @@ export const CardFeed = forwardRef<HTMLDivElement, CardFeedProps>(
             
             {campaign.patient_photo_url && (
               <>
-                <div className="mt-auto mb-1 text-slate-500 text-[10px] font-bold uppercase tracking-widest text-center">
+                <div className="mt-4 mb-1 text-slate-500 text-[10px] font-bold uppercase tracking-widest text-center">
                   Precisa-se de Sangue
                 </div>
                 <div className="text-[56px] font-black leading-none tracking-tighter" style={{ color: bloodConfig.color }}>
@@ -65,7 +66,7 @@ export const CardFeed = forwardRef<HTMLDivElement, CardFeedProps>(
           </div>
 
           {/* Lado Direito (Informações) */}
-          <div className="flex-1 flex flex-col justify-between py-2">
+          <div className="flex-1 flex flex-col justify-center gap-6 py-2">
             <div>
               {/* Logo pequena */}
               <div className="flex items-center gap-2 mb-6">
@@ -94,7 +95,7 @@ export const CardFeed = forwardRef<HTMLDivElement, CardFeedProps>(
             </div>
 
             {/* QR Code footer */}
-            <div className="flex items-center gap-3 mt-6 p-3 bg-slate-50 rounded-xl border border-slate-100">
+            <div className="flex items-center gap-3 p-3 bg-slate-50 rounded-xl border border-slate-100">
               <QRCodeDisplay url={qrUrl} size={48} />
               <div>
                 <div className="text-slate-900 text-[11px] font-bold leading-tight">Escaneie para<br/>saber mais</div>
