@@ -17,6 +17,15 @@ export const metadata: Metadata = {
     type: 'website',
     locale: 'pt_BR',
   },
+  icons: {
+    icon: [
+      { url: '/icon.svg', type: 'image/svg+xml' },
+      { url: '/icon', sizes: '32x32', type: 'image/png' },
+    ],
+    apple: [
+      { url: '/apple-icon', sizes: '180x180', type: 'image/png' },
+    ],
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -25,11 +34,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body suppressHydrationWarning>
         {/* Navbar */}
         <header className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-md border-b border-slate-100 shadow-sm">
-          <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
-            <Link href="/" className="hover:opacity-90 transition-opacity">
+          <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between gap-2">
+            <Link href="/" className="hover:opacity-90 transition-opacity shrink-0">
               <Logo size="sm" />
             </Link>
-            <nav className="flex items-center gap-4">
+            <nav className="flex items-center gap-3 sm:gap-4 shrink-0">
               <Link
                 href="/#campanhas"
                 className="text-sm font-medium text-slate-600 hover:text-red-600 transition-colors hidden sm:block"
@@ -39,9 +48,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <Link
                 href="/novo"
                 id="cta-header"
-                className="inline-flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white text-sm font-bold px-5 py-2.5 rounded-xl transition-all duration-200 shadow-md shadow-red-100 hover:shadow-red-200 hover:-translate-y-0.5"
+                className="inline-flex items-center gap-1.5 sm:gap-2 bg-red-600 hover:bg-red-700 text-white text-xs sm:text-sm font-bold px-3.5 sm:px-5 py-2 sm:py-2.5 rounded-xl transition-all duration-200 shadow-md shadow-red-100 hover:shadow-red-200 hover:-translate-y-0.5 whitespace-nowrap shrink-0"
               >
-                🩸 Criar Pedido
+                <span>🩸</span>
+                <span>Criar Pedido</span>
               </Link>
             </nav>
           </div>

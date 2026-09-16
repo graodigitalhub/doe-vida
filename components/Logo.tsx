@@ -45,15 +45,10 @@ export function Logo({ size = 'md', variant = 'full', className = '' }: LogoProp
       </svg>
 
       {variant === 'full' && (
-        <div className="flex flex-col leading-none">
-          <span className={`font-bold tracking-tight ${s.text}`}>
-            <span className="text-slate-800">Doe </span>
-            <span className="text-red-600">Vida</span>
-          </span>
-          <span className={`text-slate-500 font-medium ${s.tagline}`}>
-            Conectando corações para salvar vidas
-          </span>
-        </div>
+        <span className={`font-bold tracking-tight ${s.text} whitespace-nowrap`}>
+          <span className="text-slate-800">Doe </span>
+          <span className="text-red-600">Vida</span>
+        </span>
       )}
     </div>
   );
