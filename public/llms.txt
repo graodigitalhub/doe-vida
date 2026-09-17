@@ -1,0 +1,20 @@
+# Doe Vida
+
+> Plataforma humanitária de campanhas de doação de sangue no Brasil. Conectando corações para salvar vidas.
+
+O **Doe Vida** é uma aplicação que permite que pacientes, hospitais ou familiares cadastrem rapidamente pedidos urgentes de doação de sangue. A plataforma facilita o processo gerando automaticamente cards e materiais visuais para divulgação viral no WhatsApp, Instagram e outras redes sociais.
+
+## Links Rápidos
+- **Página Inicial (Lista de Campanhas):** [https://doevida.com.br/](https://doevida.com.br/)
+- **Criar Novo Pedido de Doação:** [https://doevida.com.br/novo](https://doevida.com.br/novo)
+
+## Como funcionam as Campanhas Individuais
+Cada paciente cadastrado recebe uma página única (exemplo de rota: `https://doevida.com.br/c/[slug]`). Nessas páginas, você encontrará:
+- Nome do Paciente e código do leito.
+- Hospital e Hemocentro onde a doação deve ser feita (com endereço e cidade).
+- O tipo sanguíneo necessário.
+- Prazo de urgência.
+- Dados de OpenGraph e JSON-LD otimizados descrevendo a localidade (via Schema.org `Place` e `PostalAddress`) para facilitar a leitura por motores de busca e Inteligências Artificiais.
+
+## Privacidade e Compliance
+Os dados dos pacientes e campanhas são exibidos com o explícito consentimento do criador, em total conformidade com a LGPD (Lei Geral de Proteção de Dados - Brasil). As campanhas têm uma duração máxima de segurança de 60 dias.
