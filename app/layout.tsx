@@ -2,8 +2,10 @@ import type { Metadata } from 'next';
 import './globals.css';
 import { Logo } from '@/components/Logo';
 import Link from 'next/link';
+import { GoogleAnalytics } from '@next/third-parties/google';
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://doevida.com.br';
+const gaId = process.env.NEXT_PUBLIC_GA_ID || 'G-9ZVQZS2GM0';
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -112,6 +114,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             </div>
           </div>
         </footer>
+        {/* Google Analytics */}
+        {gaId && <GoogleAnalytics gaId={gaId} />}
       </body>
     </html>
   );
