@@ -25,7 +25,17 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   return {
     title: `${campaign.patient_name} precisa de sangue (${bloodLabel}) — Doe Vida`,
     description: `Pedido de doação de ${campaign.donation_type} (${bloodLabel}) para ${campaign.patient_name} em ${campaign.hemocenter_name}, ${campaign.city} - ${campaign.state}.`,
+    alternates: {
+      canonical: `/c/${campaign.slug}`,
+    },
     openGraph: {
+      title: `🚨 URGENTE: ${campaign.patient_name} precisa de sangue (${bloodLabel})`,
+      description: `Doe sangue e salve a vida de ${campaign.patient_name}. Hemocentro: ${campaign.hemocenter_name} (${campaign.city} - ${campaign.state}).`,
+      url: `/c/${campaign.slug}`,
+      type: 'article',
+    },
+    twitter: {
+      card: 'summary_large_image',
       title: `🚨 URGENTE: ${campaign.patient_name} precisa de sangue (${bloodLabel})`,
       description: `Doe sangue e salve a vida de ${campaign.patient_name}. Hemocentro: ${campaign.hemocenter_name} (${campaign.city} - ${campaign.state}).`,
     },
@@ -53,8 +63,37 @@ export default async function CampaignPage({ params, searchParams }: PageProps) 
   const displayBloodType = isAnyBloodType(campaign.blood_type) ? 'Qualquer Tipo (Aceita todos os doadores)' : campaign.blood_type;
   const copyText = `🩸 Pedido de Doação de Sangue\n\nPaciente: ${campaign.patient_name}\nTipo Sanguíneo: ${displayBloodType}\nInternado em: ${campaign.hospital_name}${campaign.patient_code ? ` (Leito: ${campaign.patient_code})` : ''}\nOnde Doar: ${campaign.hemocenter_name} (${campaign.city} - ${campaign.state})\n\nAcesse o pedido e saiba como doar:\n${siteUrl}/c/${campaign.slug}`;
 
+  const campaignJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'SocialMediaPosting',
+    headline: `Pedido de Doação de Sangue para ${campaign.patient_name}`,
+    description: `Pedido de doação de ${campaign.donation_type} (${formatBloodType(campaign.blood_type)}) para ${campaign.patient_name} em ${campaign.hemocenter_name}, ${campaign.city} - ${campaign.state}.`,
+    datePublished: campaign.created_at,
+    url: `${siteUrl}/c/${campaign.slug}`,
+    image: campaign.patient_photo_url || `${siteUrl}/c/${campaign.slug}/opengraph-image`,
+    author: {
+      '@type': 'Organization',
+      name: 'Doe Vida',
+      url: siteUrl,
+    },
+    contentLocation: {
+      '@type': 'Place',
+      name: campaign.hemocenter_name,
+      address: {
+        '@type': 'PostalAddress',
+        addressLocality: campaign.city,
+        addressRegion: campaign.state,
+        addressCountry: 'BR',
+      },
+    },
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-red-50/30 py-12 px-4">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(campaignJsonLd) }}
+      />
       <div className="max-w-2xl mx-auto">
 
         {/* Status: concluído */}

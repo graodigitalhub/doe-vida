@@ -3,19 +3,29 @@ import './globals.css';
 import { Logo } from '@/components/Logo';
 import Link from 'next/link';
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://doevida.com.br';
+
 export const metadata: Metadata = {
-  metadataBase: new URL('https://doevida.com.br'),
+  metadataBase: new URL(siteUrl),
   title: 'Doe Vida — Conectando corações para salvar vidas',
   description: 'Plataforma de campanhas de doação de sangue. Cadastre pedidos urgentes, gere cards profissionais para Instagram e WhatsApp e ajude a salvar vidas.',
-  keywords: ['doação de sangue', 'hemocentro', 'tipo sanguíneo', 'campanha', 'doe vida'],
+  keywords: ['doação de sangue', 'hemocentro', 'tipo sanguíneo', 'campanha', 'doe vida', 'salvar vidas', 'banco de sangue'],
   authors: [{ name: 'Doe Vida' }],
+  alternates: {
+    canonical: '/',
+  },
   openGraph: {
     title: 'Doe Vida — Conectando corações para salvar vidas',
     description: 'Cadastre pedidos de doação de sangue e gere cards virais para Instagram e WhatsApp.',
-    url: 'https://doevida.com.br',
+    url: siteUrl,
     siteName: 'Doe Vida',
     type: 'website',
     locale: 'pt_BR',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Doe Vida — Conectando corações para salvar vidas',
+    description: 'Cadastre pedidos de doação de sangue e gere cards virais para Instagram e WhatsApp.',
   },
   icons: {
     icon: [
@@ -28,10 +38,38 @@ export const metadata: Metadata = {
   },
 };
 
+const organizationJsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Organization',
+      '@id': `${siteUrl}/#organization`,
+      name: 'Doe Vida',
+      url: siteUrl,
+      logo: `${siteUrl}/icon.svg`,
+      description: 'Plataforma humanitária de campanhas de doação de sangue no Brasil.',
+    },
+    {
+      '@type': 'WebSite',
+      '@id': `${siteUrl}/#website`,
+      url: siteUrl,
+      name: 'Doe Vida',
+      publisher: {
+        '@id': `${siteUrl}/#organization`,
+      },
+      inLanguage: 'pt-BR',
+    },
+  ],
+};
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="pt-BR" suppressHydrationWarning>
       <body suppressHydrationWarning>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
+        />
         {/* Navbar */}
         <header className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-md border-b border-slate-100 shadow-sm">
           <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between gap-2">
