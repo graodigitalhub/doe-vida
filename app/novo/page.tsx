@@ -146,11 +146,11 @@ export default function NovoCampaignPage() {
           </p>
         </div>
 
-        {/* Alerta de Validade de 60 Dias */}
+        {/* Alerta de Validade de 30 Dias */}
         <div className="bg-amber-50/80 border border-amber-200/80 rounded-2xl p-4 mb-6 flex items-start gap-3 text-amber-900 shadow-sm">
           <Calendar className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
           <div className="text-sm">
-            <span className="font-bold">Validade máxima de 60 dias:</span> Cada pedido permanece ativo por até 60 dias para manter as informações sempre atualizadas para os doadores. Você poderá encerrar a campanha a qualquer momento pelo seu link de edição.
+            <span className="font-bold">Validade máxima de 30 dias:</span> Cada pedido permanece ativo por até 30 dias para manter as informações sempre atualizadas para os doadores. Você poderá encerrar a campanha a qualquer momento pelo seu link de edição.
           </div>
         </div>
 

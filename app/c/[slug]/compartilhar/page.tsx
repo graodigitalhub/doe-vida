@@ -1,7 +1,7 @@
-import { notFound } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 import type { Metadata } from 'next';
 import { getCampaignBySlug } from '@/lib/actions/campaigns';
-import { formatBloodType } from '@/lib/utils';
+import { formatBloodType, isCampaignExpired } from '@/lib/utils';
 import { CardGenerator } from './CardGenerator';
 
 interface PageProps {
@@ -11,7 +11,7 @@ interface PageProps {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const campaign = await getCampaignBySlug(slug);
-  if (!campaign) return { title: 'Campanha não encontrada' };
+  if (!campaign || isCampaignExpired(campaign.created_at)) return { title: 'Campanha Encerrada — Doe Vida' };
 
   const bloodLabel = formatBloodType(campaign.blood_type);
 
@@ -25,6 +25,11 @@ export default async function CompartilharPage({ params }: PageProps) {
   const { slug } = await params;
   const campaign = await getCampaignBySlug(slug);
   if (!campaign) notFound();
+
+  // Se a campanha estiver com mais de 60 dias, redireciona para a página de campanha encerrada
+  if (isCampaignExpired(campaign.created_at)) {
+    redirect(`/c/${slug}`);
+  }
 
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://doevida.com.br';
 

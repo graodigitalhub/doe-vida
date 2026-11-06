@@ -21,6 +21,13 @@ export function formatDate(dateString: string | null): string {
   });
 }
 
+export const THIRTY_DAYS_MS = 30 * 24 * 60 * 60 * 1000;
+
+export function isCampaignExpired(createdAt?: string | null): boolean {
+  if (!createdAt) return false;
+  return (Date.now() - new Date(createdAt).getTime()) > THIRTY_DAYS_MS;
+}
+
 export function isUrgent(urgentUntil: string | null): boolean {
   if (!urgentUntil) return false;
   const diff = new Date(urgentUntil).getTime() - Date.now();

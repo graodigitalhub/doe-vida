@@ -17,4 +17,4 @@ Cada paciente cadastrado recebe uma página única (exemplo de rota: `https://do
 - Dados de OpenGraph e JSON-LD otimizados descrevendo a localidade (via Schema.org `Place` e `PostalAddress`) para facilitar a leitura por motores de busca e Inteligências Artificiais.
 
 ## Privacidade e Compliance
-Os dados dos pacientes e campanhas são exibidos com o explícito consentimento do criador, em total conformidade com a LGPD (Lei Geral de Proteção de Dados - Brasil). As campanhas têm uma duração máxima de segurança de 60 dias.
+Os dados dos pacientes e campanhas são exibidos com o explícito consentimento do criador, em total conformidade com a LGPD (Lei Geral de Proteção de Dados - Brasil). As campanhas têm uma duração máxima de segurança de 30 dias.

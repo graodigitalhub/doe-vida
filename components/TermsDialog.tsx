@@ -39,13 +39,13 @@ export function TermsDialog({ isOpen, onClose }: TermsDialogProps) {
         {/* Content */}
         <div className="p-6 overflow-y-auto space-y-5 text-sm text-slate-600 leading-relaxed">
           
-          {/* Destaque 60 dias */}
+          {/* Destaque 30 dias */}
           <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 flex items-start gap-3">
             <Calendar className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
             <div>
-              <p className="font-bold text-amber-900 text-sm">Validade Máxima de 60 Dias</p>
+              <p className="font-bold text-amber-900 text-sm">Validade Máxima de 30 Dias</p>
               <p className="text-amber-800 text-xs mt-0.5 leading-normal">
-                Para manter as informações verídicas e evitar circulação indevida de pedidos desatualizados, <strong>cada campanha possui vigência máxima de 60 dias</strong>. Após esse prazo, a campanha expira e é arquivada automaticamente pelo sistema.
+                Para manter as informações verídicas e evitar circulação indevida de pedidos desatualizados, <strong>cada campanha possui vigência máxima de 30 dias</strong>. Após esse prazo, a campanha expira e é removida automaticamente pelo sistema.
               </p>
             </div>
           </div>
@@ -73,7 +73,7 @@ export function TermsDialog({ isOpen, onClose }: TermsDialogProps) {
               3. Controle e Encerramento
             </h3>
             <p>
-              O criador do pedido recebe um <strong>link exclusivo com chave de edição</strong> para concluir ou atualizar o pedido a qualquer momento antes do prazo de 60 dias. Quando a meta é atingida, o responsável pode encerrar a exibição da campanha com um clique.
+              O criador do pedido recebe um <strong>link exclusivo com chave de edição</strong> para concluir ou atualizar o pedido a qualquer momento antes do prazo de 30 dias. Quando a meta é atingida, o responsável pode encerrar a exibição da campanha com um clique.
             </p>
           </div>
 

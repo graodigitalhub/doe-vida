@@ -3,7 +3,7 @@
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
-import { generateSlug } from '@/lib/utils';
+import { generateSlug, THIRTY_DAYS_MS } from '@/lib/utils';
 import { createCampaignSchema, updateCampaignSchema } from '@/lib/validations/campaign';
 import type { Campaign, UpdateCampaignInput } from '@/types/campaign';
 
@@ -13,22 +13,19 @@ import { v4 as uuidv4 } from 'uuid';
 const PUBLIC_CAMPAIGN_COLUMNS = 
   'id, slug, patient_name, blood_type, donation_type, hospital_name, hemocenter_name, city, state, patient_code, urgent_until, patient_photo_url, status, pledges_count, created_at';
 
-// 60 dias em milissegundos
-const SIXTY_DAYS_MS = 60 * 24 * 60 * 60 * 1000;
-
 export async function getCampaigns(filters?: {
   state?: string;
   city?: string;
   blood_type?: string;
 }): Promise<Campaign[]> {
   const supabase = await createClient();
-  const sixtyDaysAgo = new Date(Date.now() - SIXTY_DAYS_MS).toISOString();
+  const thirtyDaysAgo = new Date(Date.now() - THIRTY_DAYS_MS).toISOString();
 
   let query = supabase
     .from('campaigns')
     .select(PUBLIC_CAMPAIGN_COLUMNS)
     .eq('status', 'active')
-    .gte('created_at', sixtyDaysAgo) // Regra de 60 dias: apenas campanhas recentes
+    .gte('created_at', thirtyDaysAgo) // Regra de 30 dias: apenas campanhas recentes
     .order('created_at', { ascending: false })
     .limit(50);
 
@@ -52,10 +49,10 @@ export async function getCampaignBySlug(slug: string): Promise<Campaign | null> 
 
   if (error || !data) return null;
 
-  // Checa se já completou 60 dias para marcar status como expirado visualmente
+  // Checa se já completou 30 dias para marcar como encerrada
   const campaign = data as unknown as Campaign;
   const createdAtTime = new Date(campaign.created_at).getTime();
-  if (Date.now() - createdAtTime > SIXTY_DAYS_MS && campaign.status === 'active') {
+  if (Date.now() - createdAtTime > THIRTY_DAYS_MS) {
     campaign.status = 'completed';
   }
 

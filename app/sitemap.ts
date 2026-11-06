@@ -3,7 +3,7 @@ import { createClient } from '@supabase/supabase-js';
 
 export const revalidate = 3600; // Revalida o sitemap a cada 1 hora
 
-const SIXTY_DAYS_MS = 60 * 24 * 60 * 60 * 1000;
+const THIRTY_DAYS_MS = 30 * 24 * 60 * 60 * 1000;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://doevida.com.br';
@@ -32,13 +32,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }
 
     const supabase = createClient(supabaseUrl, supabaseKey);
-    const sixtyDaysAgo = new Date(Date.now() - SIXTY_DAYS_MS).toISOString();
+    const thirtyDaysAgo = new Date(Date.now() - THIRTY_DAYS_MS).toISOString();
 
     const { data: campaigns, error } = await supabase
       .from('campaigns')
       .select('slug, created_at')
       .eq('status', 'active')
-      .gte('created_at', sixtyDaysAgo)
+      .gte('created_at', thirtyDaysAgo)
       .order('created_at', { ascending: false })
       .limit(200);
 

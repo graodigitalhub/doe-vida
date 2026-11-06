@@ -1,14 +1,14 @@
-import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import type { Metadata } from 'next';
 import { MapPin, CheckCircle, Share2, Navigation, ShieldCheck } from 'lucide-react';
-import { getCampaignBySlug, verifyCampaignToken } from '@/lib/actions/campaigns';
-import { BLOOD_TYPE_CONFIG, formatDate, isUrgent, isAnyBloodType, formatBloodType } from '@/lib/utils';
+import { getCampaignBySlug, getCampaigns, verifyCampaignToken } from '@/lib/actions/campaigns';
+import { BLOOD_TYPE_CONFIG, formatDate, isUrgent, isAnyBloodType, formatBloodType, isCampaignExpired } from '@/lib/utils';
 import { CopyDataButton } from './CopyDataButton';
 import { CompleteCampaignButton } from './CompleteCampaignButton';
 import { PledgeButton } from '@/components/PledgeButton';
 import { EditCampaignModal } from '@/components/EditCampaignModal';
+import { ClosedCampaignView } from '@/components/ClosedCampaignView';
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -18,7 +18,12 @@ interface PageProps {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const campaign = await getCampaignBySlug(slug);
-  if (!campaign) return { title: 'Campanha não encontrada — Doe Vida' };
+  if (!campaign || isCampaignExpired(campaign.created_at)) {
+    return {
+      title: 'Campanha Encerrada — Doe Vida',
+      description: 'Esta campanha de doação de sangue foi concluída. Veja outros pacientes que precisam da sua ajuda agora.',
+    };
+  }
 
   const bloodLabel = formatBloodType(campaign.blood_type);
 
@@ -47,7 +52,17 @@ export default async function CampaignPage({ params, searchParams }: PageProps) 
   const { token } = await searchParams;
 
   const campaign = await getCampaignBySlug(slug);
-  if (!campaign) notFound();
+
+  // Se a campanha não existir ou tiver mais de 60 dias (expirada), renderiza a tela de Campanha Encerrada
+  if (!campaign || isCampaignExpired(campaign.created_at)) {
+    const activeCampaigns = await getCampaigns();
+    return (
+      <ClosedCampaignView
+        patientName={campaign?.patient_name}
+        activeCampaigns={activeCampaigns.slice(0, 4)}
+      />
+    );
+  }
 
   const bloodConfig = BLOOD_TYPE_CONFIG[campaign.blood_type] ?? BLOOD_TYPE_CONFIG['O+'];
   const urgent = isUrgent(campaign.urgent_until);
