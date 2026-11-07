@@ -25,6 +25,8 @@ export async function getCampaigns(filters?: {
     .from('campaigns')
     .select(PUBLIC_CAMPAIGN_COLUMNS)
     .eq('status', 'active')
+    .not('patient_name', 'ilike', '%teste%')
+    .not('slug', 'ilike', '%teste%')
     .gte('created_at', thirtyDaysAgo) // Regra de 30 dias: apenas campanhas recentes
     .order('created_at', { ascending: false })
     .limit(50);
@@ -39,6 +41,8 @@ export async function getCampaigns(filters?: {
 }
 
 export async function getCampaignBySlug(slug: string): Promise<Campaign | null> {
+  if (slug.includes('teste')) return null;
+
   const supabase = await createClient();
 
   const { data, error } = await supabase
